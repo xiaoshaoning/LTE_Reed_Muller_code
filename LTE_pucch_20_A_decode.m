@@ -14,13 +14,19 @@ interleaved_symbols = rx_symbols_extended(permutation_for_20_A);
 if code_length > 6
     
     load pucch_mask_matrix
-    
     de_masked_matrix = interleaved_symbols .* pucch_mask_matrix;
+%     A = de_masked_matrix * hadamard(32);
     
-    A = de_masked_matrix * hadamard(32);
+    A = zeros(128, 32);
+    for ii = 1:128
+        A(ii, :) = fast_hadamard_transform(de_masked_matrix(ii, :));
+    end
     
 else
-    A = interleaved_symbols * hadamard(32);
+    
+%     A = interleaved_symbols * hadamard(32);
+
+    A = fast_hadamard_transform(interleaved_symbols);
 end
 
 a = max(max(abs(A)));
@@ -29,7 +35,7 @@ a = max(max(abs(A)));
 
 x_prime = bitget(d - 1, 1:5);
 
-x_1 = double(A(c, d) < 0);
+x_1 = double(A(c, d) > 0);
 
 decoded_bits = [x_1, x_prime, bitget(c - 1, 7:-1:1)];
 

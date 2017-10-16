@@ -17,9 +17,11 @@ disp(x);
 
 y = LTE_Reed_Muller_encode(x);
 
-tx_symbols = 1 - 2 * y;
+tx_symbols = lteSymbolModulate(y, 'QPSK');
 
-decoded_bits = LTE_Reed_Muller_decode(tx_symbols, code_length);
+rx_symbols = lteSymbolDemodulate(tx_symbols, 'QPSK', 'Soft');
+
+decoded_bits = LTE_Reed_Muller_decode(rx_symbols.', code_length);
 
 disp(decoded_bits);
 

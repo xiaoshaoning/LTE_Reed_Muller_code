@@ -7,7 +7,7 @@ elseif nargin == 1
 end
 
 if code_length > 13
-    disp('code length is forced to be 11.');
+    disp('code length is forced to be 13.');
     code_length = 13;
 end
 
@@ -17,9 +17,11 @@ disp(x);
 
 y = LTE_pucch_20_A_encode(x);
 
-tx_symbols = 1 - 2 * y;
+tx_symbols = lteSymbolModulate(y, 'QPSK');
 
-decoded_bits = LTE_pucch_20_A_decode(tx_symbols, code_length);
+rx_symbols = lteSymbolDemodulate(tx_symbols, 'QPSK', 'Soft');
+
+decoded_bits = LTE_pucch_20_A_decode(rx_symbols.', code_length);
 
 disp(decoded_bits);
 
